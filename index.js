@@ -10,31 +10,48 @@ app.use(cors())
 app.use(express.json())
 
 const PORT = process.env.PORT
+// const baseUrl = process.env.BASE_URL
 
+//funcion para crear manualmente el idLink
 function idGeneraror() {
-    
+
     const idLink = Math.random().toString(36).substring(2, 8)
 
     return idLink
 
 }
 
-app.post('/idLink', (req, res) => {
+//api para crear el id del link y devolver la informacion completa
+app.post('/createIdLink', (req, res) => {
 
+    //se recibe la url para acortarla
     const { inputUrl } = req.body
     const idLink = idGeneraror()
 
+    const baseUrl = (`${req.protocol}://${req.get("host")}`)
+    
     const shortLink = {
         idLink: idLink,
         url: inputUrl,
-        shortLink: `http://localhost:${PORT}/${idLink}`
+        shortLink: `${baseUrl}/${idLink}`
     };
-
+    
+    //guardar en supabase
+    
     res.send(shortLink)
+    
+})
+
+//api para consultar el idLink y redireccion a la url original
+app.get('/:idLink', (req, res) => {
+
+    const idLink = req.params.idLink
+        
+    res.send(idLink)
 
 })
 
 
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`)
+    console.log(`Server is running on port ${PORT}`)
 })
