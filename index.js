@@ -43,7 +43,7 @@ app.post('/createIdLink', (req, res) => {
 })
 
 //api para consultar el idLink y redireccion a la url original
-app.get('/:idLink', (req, res) => {
+app.get('/idLink/:idLink', (req, res) => {
 
     const idLink = req.params.idLink
         
