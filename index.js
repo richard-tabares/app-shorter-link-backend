@@ -22,7 +22,7 @@ function idGeneraror() {
 }
 
 //api para crear el id del link y devolver la informacion completa
-app.post('createIdLink', (req, res) => {
+app.post('/createIdLink', (req, res) => {
 
     //se recibe la url para acortarla
     const { inputUrl } = req.body
@@ -36,8 +36,7 @@ app.post('createIdLink', (req, res) => {
         shortLink: `${baseUrl}/${idLink}`
     };
     
-    //guardar en supabase
-    
+    //guardar en supabasee
     res.send(shortLink)
     
 })
