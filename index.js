@@ -29,11 +29,10 @@ app.post('/createIdLink', (req, res) => {
     console.log(inputUrl)
     const idLink = idGeneraror()
 
-    //produccion
-    // const baseUrl = (`${req.protocol}://${req.get("host")}`)
-    // desarrollo
-    const baseUrl = (`${req.protocol}://acortarlo.link`)
-    
+    //get de la url base
+    const baseUrl = (`${req.protocol}://${req.get("host")}`)
+
+    //se crea objeto para unir ambas partes, url base e idLink
     const shortLink = {
         idLink: idLink,
         url: inputUrl,
