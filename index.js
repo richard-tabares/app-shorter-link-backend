@@ -29,14 +29,16 @@ app.post('/createIdLink', (req, res) => {
     console.log(inputUrl)
     const idLink = idGeneraror()
 
-    const baseUrl = (`${req.protocol}://${req.get("host")}`)
+    //produccion
+    // const baseUrl = (`${req.protocol}://${req.get("host")}`)
+    // desarrollo
+    const baseUrl = (`${req.protocol}://acortarlo.link`)
     
     const shortLink = {
         idLink: idLink,
         url: inputUrl,
         shortLink: `${baseUrl}/${idLink}`
     };
-    console.log("Body recibido:", req.body);
     //guardar en supabasee
     res.send(shortLink)
     
