@@ -3,6 +3,7 @@ import dotenv from 'dotenv'
 import cors from 'cors'
 import { supabase } from './supabaseClient.js'
 
+//habilita variables de entorno
 dotenv.config()
 const app = express()
 
@@ -10,38 +11,46 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 
+//variable de entorno PORT
 const PORT = process.env.PORT
 
 //funcion para crear manualmente el idLink
-
 const idGeneraror = () => (Math.random().toString(36).substring(2, 8))
 
-//api para crear el id del link y devolver la informacion completa
+//endopoint para crear el id del link y devolver un objeto con la informacion completa
 app.post('/createIdLink', async (req, res) => {
 
-
-    //se recibe la url para acortarla
+    //se recibe la url del body para acortarla
     const { inputUrl } = req.body
     let idLink = ''
+    //varibale utilizada para validar que se cree un idLink unico
+    //en la base de datos
     let exits = true
 
-    //get de la url base
+    //se obtiene protocolo y host para URL base
     const baseUrl = (`${req.protocol}://${req.get("host")}`)
 
     try {
         
         //antes de guardar debo verificar si ya existe un idLink
         while (exits) {
+
             idLink = idGeneraror()
-            console.log(idLink)
+
+            //consult a la DB si existe el idLink generado
             const { data: existingLink, error: existingError } = await supabase
             .from('links')
             .select()
             .eq('idLink', idLink)
             .maybeSingle()
             
+            //lanzamos error si hay algun problema con la coneccion a la DB
             if (existingError) throw new Error('Error al conectarse con el servicio')
             
+            //validamos que si la consulta haya devuelto informacion
+            //en caso de devolver, podra un false
+            //en caso de no devolver nada, podra true y seguira el while
+            // hasta encontrar un idLink unico
             exits = !!existingLink
             
         }
@@ -54,16 +63,19 @@ app.post('/createIdLink', async (req, res) => {
         };
 
         //guardar en supabasee
-        const { data, error } = await supabase
+        const { error } = await supabase
             .from('links')
             .insert([shortLink])
 
+        //lanzamos error si hay algun problema con la coneccion a la DB
         if (error) throw new Error('Error al conectarse con el servicio')
 
+        //enviadmo objeto json al frontend
         res.send(shortLink)
 
     } catch (error) {
 
+        //retornamos el error de ser asi
         return res.status(500).json({ error: error.message })
 
     }
@@ -73,6 +85,8 @@ app.post('/createIdLink', async (req, res) => {
 //api para consultar el idLink y redireccion a la url original
 app.get('/:idLink', async (req, res) => {
 
+
+    //adicionar try para asegurarnos la consulta
     const idLink = req.params.idLink
 
     const { data, error } = await supabase
