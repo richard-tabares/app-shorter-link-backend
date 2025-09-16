@@ -13,6 +13,7 @@ app.use(express.json())
 
 //variable de entorno PORT
 const PORT = process.env.PORT
+// const BASE_URL = process.env.BASE_URL
 
 //funcion para crear manualmente el idLink
 const idGeneraror = () => Math.random().toString(36).substring(2, 8)
@@ -28,6 +29,7 @@ app.post('/createIdLink', async (req, res) => {
 
 	//se obtiene protocolo y host para URL base
 	const baseUrl = `${req.protocol}://${req.get('host')}`
+	// const baseUrl = `${req.protocol}://${BASE_URL}`
 
 	try {
 		//antes de guardar debo verificar si ya existe un idLink
